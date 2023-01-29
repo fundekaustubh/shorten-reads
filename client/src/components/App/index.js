@@ -7,6 +7,12 @@ function App() {
   const searchEndingDate = useRef(null);
   const searchType = useRef(null);
 
+  /**
+ * Handles the search functionality and returns a list of articles.
+ * 
+ * @param {Object} evt - The event object passed in by the form submission.
+ * @returns {Array} articles - The list of articles fetched from the news API.
+ */
   const handleSearch = async (evt) => {
     evt.preventDefault();
     // include sources as well
@@ -16,6 +22,7 @@ function App() {
       to: searchEndingDate.current.value,
       sortBy: searchType.current.value
     };
+    // these articles are fetched after an HTTP call to news API
     const articles = [];
     return articles;
   }
