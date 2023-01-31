@@ -1,0 +1,27 @@
+.Header {
+    padding: 1rem;
+    background-color: #6936f5;
+    color: white;
+}
+
+.Header > * {
+    color: white;
+}
+
+.MainLogo {
+    height: 2rem;
+}
+
+.HoverAnimation {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.HoverAnimation:hover {
+  background: rgba(180, 180, 180, 0.32);
+  transition: 0.4s;
+}
+

@@ -1,6 +1,7 @@
 import './styles.css';
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
+import Header from '../Header';
 
 function App() {
   const searchText = useRef(null);
@@ -54,42 +55,45 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <form onSubmit={handleSearch}>
-        <input type="text" ref={searchText} />
-        <input placeholder="From" type="date" ref={searchStartingDate} />
-        <input placeholder="To" type="date" ref={searchEndingDate} />
-        <select ref={searchType}>
-          <option value="popularity" defaultValue>Popularity</option>
-          <option value="relevancy">Relevancy</option>
-          <option value="publishedAt">Published At</option>
-        </select>
-        <button>Submit</button>
-      </form>
-      {
-        fetchArticlesIsPending &&
-        <div>
-          Fetching articles...
-        </div>
-      }
-      {
-        articles && articles.data && articles.data.articles.length > 0 &&
-        <p>{articles.data.articles.length} articles found...</p> &&
-        <ul>
-          {articles.data.articles.map((article, idx) => {
-            return articles.author ?
-              <li key={idx}>
-                {article.description},
-                {article.author}
-              </li> :
-              <li key={idx}>
-                {article.description}
-              </li>
-          }
-          )}
-        </ul>
-      }
-    </div>
+    <>
+      <Header />
+      <div className="App">
+        <form onSubmit={handleSearch}>
+          <input type="text" ref={searchText} />
+          <input placeholder="From" type="date" ref={searchStartingDate} />
+          <input placeholder="To" type="date" ref={searchEndingDate} />
+          <select ref={searchType}>
+            <option value="popularity" defaultValue>Popularity</option>
+            <option value="relevancy">Relevancy</option>
+            <option value="publishedAt">Published At</option>
+          </select>
+          <button>Submit</button>
+        </form>
+        {
+          fetchArticlesIsPending &&
+          <div>
+            Fetching articles...
+          </div>
+        }
+        {
+          articles && articles.data && articles.data.articles.length > 0 &&
+          <p>{articles.data.articles.length} articles found...</p> &&
+          <ul>
+            {articles.data.articles.map((article, idx) => {
+              return articles.author ?
+                <li key={idx}>
+                  {article.description.replace(/<[^>]*>/g, ' ')},
+                  {article.author}
+                </li> :
+                <li key={idx}>
+                  {article.description.replace(/<[^>]*>/g, ' ')}
+                </li>
+            }
+            )}
+          </ul>
+        }
+      </div>
+    </>
   );
 }
 
