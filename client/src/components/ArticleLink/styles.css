@@ -1,0 +1,20 @@
+.Author {
+    color: grey;
+}
+
+.ArticleLink {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 450;
+    margin-bottom: 0.5rem;
+    padding: 0.7rem;
+    background-color: #e8f1ff;
+    border-radius: 0.3rem;
+}
+
+.ArticleLink:hover {
+    cursor: pointer;
+    transform: translate(-0.03rem, -0.03rem);
+    -webkit-box-shadow: 1px 1px 2px 0px rgba(48,48,48,1);
+    -moz-box-shadow: 1px 1px 2px 0px rgba(48,48,48,1);
+    box-shadow: 1px 1px 2px 0px rgba(48,48,48,1);
+}

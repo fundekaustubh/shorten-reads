@@ -1,5 +1,5 @@
 .Header {
-    padding: 1rem;
+    padding: 0.75rem;
     background-color: var(--primary-color);
     color: white;
 }
@@ -9,7 +9,7 @@
 }
 
 .MainLogo {
-    height: 2rem;
+    height: 1.7rem;
 }
 
 .HoverAnimation {

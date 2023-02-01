@@ -19,13 +19,31 @@ app.use(cors({
     }
 }))
 
+const checkAttributePresence = (object, key) => {
+    return Object.keys(object).includes(key) && ![null, undefined, ''].includes(object[key]);
+}
+
 app.post('/articles', async (req, res) => {
     try {
+        let newsAPIResponse;
         // Request body contains the query in the form of a JSON object, which will be sent to the news API.
-        const newsAPIResponse = await newsapi.v2.everything({
-            ...req.body,
-            language: 'en'
-        });
+        if (checkAttributePresence(req.body, 'q') ||
+            checkAttributePresence(req.body, 'sources') ||
+            checkAttributePresence(req.body, 'domains')) {
+            newsAPIResponse = await newsapi.v2.everything({
+                ...req.body,
+                language: 'en'
+            });
+            newsAPIResponse['topHeadlines'] = false;
+        }
+        else {
+            newsAPIResponse = await newsapi.v2.topHeadlines({
+                ...req.body,
+                language: 'en'
+            })
+            newsAPIResponse['topHeadlines'] = true;
+        }
+
         console.log("Fetch articles executed successfully!");
         return res.json(newsAPIResponse);
     }
