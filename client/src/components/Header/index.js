@@ -3,9 +3,9 @@ import './styles.css';
 import logo from '../../logo/png/logo-no-background.png';
 const Header = () => {
     return (
-        <div class="Header">
-            <img src={logo} alt="Shortened Reads logo." class="MainLogo" />
-            <button class="HoverAnimation">Categories</button>
+        <div className="Header">
+            <img src={logo} alt="Shortened Reads logo." className="MainLogo" />
+            <button className="HoverAnimation">Categories</button>
         </div>
     );
 }

@@ -26,6 +26,7 @@ app.post('/articles', async (req, res) => {
             ...req.body,
             language: 'en'
         });
+        console.log("Fetch articles executed successfully!");
         return res.json(newsAPIResponse);
     }
     catch (err) {
