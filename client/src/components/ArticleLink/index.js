@@ -34,7 +34,7 @@ const ArticleLink = ({ article, key, setSelectedArticle, setExpandMode }) => {
             setExpandMode(true);
             setSelectedArticle(article);
         }} className="ArticleLink">
-            {article.description.replace(/<[^>]+>/g, ' ')}
+            {article.title.replace(/<[^>]+>/g, ' ')}
             {article.author && <span className="Author"> &#8209; <i>{article.author} [{modifyDateFormat(article.publishedAt)}]</i></span>}
         </section>
     );

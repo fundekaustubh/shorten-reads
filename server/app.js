@@ -8,6 +8,8 @@ const newsapi = new NewsAPI(process.env.NEWS_API_API_KEY);
 const axios = require('axios');
 const cors = require('cors');
 const CORSWhitelist = [process.env.FRONTEND_URL];
+const { JSDOM } = require('jsdom');
+const { Readability } = require('@mozilla/readability');
 
 // Middleware
 app.use(express.json());
@@ -19,9 +21,31 @@ app.use(cors({
     }
 }))
 
+/**
+ * This function checks if an attribute with the given key is present in the provided object and is not equal to null,
+ * undefined, or an empty string.
+ *
+ * @param {Object} object - The object to check
+ * @param {String} key - The key of the attribute to check for
+ *
+ * @returns {Boolean} True if the attribute is present and not equal to null, undefined, or an empty string. False otherwise.
+ */
 const checkAttributePresence = (object, key) => {
     return Object.keys(object).includes(key) && ![null, undefined, ''].includes(object[key]);
 }
+
+/**
+ * This function is an asynchronous handler for fetching news articles from the News API.
+ * It takes in the request and response objects and returns the articles in the form of a JSON object.
+ * If the request body contains the `q` or `sources` or `domains` attribute, the function will send a request to the 
+ * News API's `everything` endpoint. Otherwise, it will send a request to the `topHeadlines` endpoint.
+ * In case of any errors, the function will return a 500 Internal Server Error status code with the error message.
+ *
+ * @param {Object} req - The request object
+ * @param {Object} res - The response object
+ *
+ * @returns {Object} The news articles in the form of a JSON object.
+ */
 
 app.post('/articles', async (req, res) => {
     try {
@@ -53,10 +77,43 @@ app.post('/articles', async (req, res) => {
     }
 })
 
-app.listen(process.env.BACKEND_PORT,
-    /**
-     * Confirms server's success status, is triggered once the server begins.
-     */
-    () => {
-        console.log(`Server started on port ${process.env.BACKEND_PORT}.`);
-    })
+/**
+ * This function is an asynchronous handler for the `/article` endpoint.
+ * It takes in the request body, which should contain an `article` object with a `url` attribute,
+ * and returns the text content of the article fetched from the given URL.
+ * In case of any errors, the function will return a 500 Internal Server Error status code with the error message.
+ *
+ * @param {Object} req - The request object
+ * @param {Object} res - The response object
+ *
+ * @returns {Object} An object with a `textContent` attribute containing the text content of the article.
+ */
+
+app.post('/article', async (req, res) => {
+    try {
+        const { article } = req.body;
+        const { url } = article;
+        const HTMLContentForTheArticleURL = await axios.get(url);
+        const DOMContentForTheArticleURL = new JSDOM(HTMLContentForTheArticleURL.data, { url });
+        const _article = new Readability(DOMContentForTheArticleURL.window.document).parse();
+        return res.status(200).send({
+            'textContent': _article.textContent,
+            'innerHTML': _article.innerHTML
+        })
+    }
+    catch (err) {
+        console.log("Error: ", err);
+        return res.status(500).send(err);
+    }
+})
+
+/**
+ * This function logs a message to the console indicating that the server has started on the specified port.
+ * The port number is taken from the `BACKEND_PORT` environment variable.
+ *
+ * @returns {void}
+ */
+
+app.listen(process.env.BACKEND_PORT, () => {
+    console.log(`Server started on port ${process.env.BACKEND_PORT}.`);
+})

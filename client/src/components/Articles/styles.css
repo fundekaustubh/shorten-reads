@@ -1,13 +1,13 @@
 .ArticlesStatus {
     padding: 0.5rem;
     text-align: center;
-    font-family: Montserrat,"Helvetica Neue",Helvetica,Arial;
+    font-family: "Poppins" ,"Helvetica Neue",Helvetica,Arial;
     font-weight: 500;
     font-size: 1.2rem;
 }
 
 .InputGroup {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Poppins', sans-serif;
   margin: 1em 0 1em 0;
   position: relative;
   text-align: center;
@@ -15,21 +15,21 @@
 
 .InputGroup input, .InputGroup select {
   font-size: 100%;
-  padding: 0.6em;
+  padding: 0.6rem;
   outline: none;
   border: 2px solid rgb(200, 200, 200);
   background-color: transparent;
   border-radius: 0.7rem;
   margin-right: 1rem;
-  font: 'Montserrat';
+  font: 'Poppins';
 }
 
 .InputGroup label {
   font-size: 100%;
   position: absolute;
-  left: 10%;
+  left: 15%;
   padding: 0.8em;
-  margin-left: 0.5em;
+  margin-left: 1em;
   pointer-events: none;
   transition: all 0.3s ease;
   color: rgb(100, 100, 100);
@@ -120,15 +120,55 @@ button.LearnMore .ButtonText {
  text-transform: uppercase;
 }
 
-button:hover .circle {
+button.LearnMore:hover .circle {
  width: 100%;
 }
 
-button:hover .circle .icon.arrow {
- background: #fff;
+button.LearnMore:hover .circle .icon.arrow {
+ background: #FFFFFF;
  transform: translate(1rem, 0);
 }
 
-button:hover .ButtonText {
- color: #fff;
+button.LearnMore:hover .ButtonText {
+ color: #FFFFFF;
+}
+
+button.BackButton {
+ display: inline-block;
+ border-radius: 1.625rem;
+ background-color: #282936;
+ border: none;
+ color: #FFFFFF;
+ text-align: center;
+ font-size: 17px;
+ font-family: 'Poppins';
+ padding: 0.75rem 0;
+ width: 7rem;
+ transition: all 0.3s;
+ cursor: pointer;
+ margin-right: 1rem;
+}
+
+button.BackButton span {
+ cursor: pointer;
+ display: inline-block;
+ position: relative;
+ transition: 0.3s;
+}
+
+button.BackButton span:after {
+ content: '«';
+ position: absolute;
+ opacity: 0;
+ top: 0;
+ left: -0.5rem;
+ transition: 0.3s;
+}
+
+button.BackButton:hover span {
+ padding-left: 0.5rem;
+}
+
+button.BackButton:hover span:after {
+ opacity: 1;
 }

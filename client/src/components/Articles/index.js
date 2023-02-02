@@ -63,6 +63,13 @@ const Articles = () => {
         <div className="Component">
             <form onSubmit={handleSearch}>
                 <div className="InputGroup">
+                    <button className="BackButton" onClick={(e) => {
+                        e.preventDefault();
+                        setExpandMode(false);
+                        setSelectedArticle(undefined);
+                    }}>
+                        <span>BACK</span>
+                    </button>
                     <input type="text" ref={searchText} id="SearchText" autoComplete="off" />
                     <label htmlFor="SearchText">Search for a topic...</label>
                     <input placeholder="From" type="date" ref={searchStartingDate} />
