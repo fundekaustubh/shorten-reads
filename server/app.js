@@ -1,17 +1,25 @@
+// Module imports.
 const express = require('express');
 if (process.env.NODE_ENV !== "production") {
     require('dotenv').config();
 }
-const app = express();
 const NewsAPI = require('newsapi');
-const newsapi = new NewsAPI(process.env.NEWS_API_API_KEY);
+const { Configuration, OpenAIApi } = require("openai");
 const axios = require('axios');
 const cors = require('cors');
-const CORSWhitelist = [process.env.FRONTEND_URL];
 const { JSDOM } = require('jsdom');
 const { Readability } = require('@mozilla/readability');
 
-// Middleware
+// Configurations.
+const app = express();
+const newsapi = new NewsAPI(process.env.NEWS_API_API_KEY);
+const configuration = new Configuration({
+    apiKey: process.env.SIMPLIFICATION_API_API_KEY,
+});
+const openai = new OpenAIApi(configuration);
+const CORSWhitelist = [process.env.FRONTEND_URL];
+
+// Middleware.
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
@@ -40,7 +48,7 @@ const checkAttributePresence = (object, key) => {
  * If the request body contains the `q` or `sources` or `domains` attribute, the function will send a request to the 
  * News API's `everything` endpoint. Otherwise, it will send a request to the `topHeadlines` endpoint.
  * In case of any errors, the function will return a 500 Internal Server Error status code with the error message.
- *
+ * @async
  * @param {Object} req - The request object
  * @param {Object} res - The response object
  *
@@ -67,8 +75,6 @@ app.post('/articles', async (req, res) => {
             })
             newsAPIResponse['topHeadlines'] = true;
         }
-
-        console.log("Fetch articles executed successfully!");
         return res.json(newsAPIResponse);
     }
     catch (err) {
@@ -82,7 +88,7 @@ app.post('/articles', async (req, res) => {
  * It takes in the request body, which should contain an `article` object with a `url` attribute,
  * and returns the text content of the article fetched from the given URL.
  * In case of any errors, the function will return a 500 Internal Server Error status code with the error message.
- *
+ * @async
  * @param {Object} req - The request object
  * @param {Object} res - The response object
  *
@@ -99,6 +105,41 @@ app.post('/article', async (req, res) => {
         return res.status(200).send({
             'textContent': _article.textContent,
             'innerHTML': _article.innerHTML
+        })
+    }
+    catch (err) {
+        console.log("Error: ", err);
+        return res.status(500).send(err);
+    }
+})
+
+/**
+ * Handles POST requests to the '/simplify' endpoint.
+ * Performs text simplification using the OpenAI API and returns the simplified text in the response.
+ * In case of any errors, the function will return a 500 Internal Server Error status code with the error message.
+ * @async
+ * @param {Object} req - The request object
+ * @param {Object} res - The response object
+ *
+ * @returns {Object} A JSON object containing the simplified text with a status code of 200 on success. 
+ */
+
+app.post('/simplify', async (req, res) => {
+    console.log("Simplification endpoint called!");
+    try {
+        const { text } = req.body;
+        const simplificationResponse = await openai.createCompletion({
+            model: "text-davinci-003",
+            prompt: "Summarize this text and don't leave any summarized sentence incomplete:\n" + text,
+            temperature: 0.7,
+            max_tokens: 64,
+            top_p: 1.0,
+            frequency_penalty: 0.0,
+            presence_penalty: 0.0,
+        });
+        console.log("Simplified text is: ", simplificationResponse.data.choices[0].text);
+        return res.status(200).send({
+            'text': simplificationResponse.data.choices[0].text
         })
     }
     catch (err) {
